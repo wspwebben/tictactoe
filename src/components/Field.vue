@@ -1,15 +1,14 @@
 <template>
   <div class="field">
-    <div class="field__row" v-for="(row, y) in field" :key="y">
-      <Cell class="field__button"
-            v-for="(col, x) in row"
-            :key="x"
-            :value="col"
-            @cell-clicked="handleCellClick([row, col])"
-      >
-        {{ x }} / {{ y }}
-      </Cell>
-    </div>
+    <Cell class="field__cell"
+        v-for="(cell, index) in field"
+        :key="index"
+        :address="index"
+        :value="cell"
+        @clicked-cell="handleCellClick"
+    >
+      {{ index }}
+    </Cell>
   </div>
 </template>
 
@@ -23,27 +22,28 @@ export default {
       required: true,
     },
   },
+  methods: {
+    handleCellClick(cell) {
+      this.$emit('clicked-cell', cell);
+    },
+  },
   components: {
     Cell,
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   .field {
-    display: block;
+    display: grid;
+    grid-template-columns: repeat(3, 50px);
+    grid-template-rows: repeat(3, 50px);
 
-    &__row {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    &__button {
-      width: 50px;
-      height: 50px;
+    &__cell {
       border: 1px solid #000;
       padding: 0;
       background-color: transparent;
+      cursor: pointer;
     }
   }
 </style>

@@ -5,18 +5,27 @@
 </template>
 
 <script>
+import { getCoordinates } from '../core/logic';
+
 export default {
   props: {
     value: {
-      type: String,
+      type: Number,
       required: true,
+    },
+    address: {
+      type: Number,
+      required: true,
+    },
+  },
+  computed: {
+    coords() {
+      return getCoordinates(this.address);
     },
   },
   methods: {
     handleClick() {
-      if (this.value !== '') return;
-
-      this.$emit('cell-clicked');
+      this.$emit('clicked-cell', this.coords);
     },
   },
 };

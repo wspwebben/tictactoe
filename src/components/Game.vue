@@ -1,7 +1,7 @@
 <template>
   <div class="game">
     <Field :field="field"
-
+      @clicked-cell="handleCellClick"
     />
   </div>
 </template>
@@ -9,30 +9,40 @@
 <script>
 import Field from './Field.vue';
 
+import {
+  createField,
+  makeMove,
+  checkWinner,
+  getNextPlayer,
+} from '../core/logic';
+
+import { NO_WINNER } from '../core/consts';
+
 export default {
-  props: {
-    size: {
-      type: Number,
-      default: 3,
-    },
-  },
   data() {
     return {
       field: [],
+      currentPlayer: 0,
     };
   },
   methods: {
-    handleCellClick([row, col]) {
-      this.field[row][col] = 'x';
+    handleCellClick(cell) {
+      this.field = makeMove(this.field, cell, this.currentPlayer);
+      const { winner } = checkWinner(this.field, this.currentPlayer);
+
+      if (winner !== NO_WINNER) {
+        // eslint-disable-next-line
+        console.log(`Winner is ${winner + 1} player!`);
+      }
+
+      this.currentPlayer = getNextPlayer(this.currentPlayer);
     },
   },
   components: {
     Field,
   },
   mounted() {
-    this.field = new Array(this.size)
-      .fill()
-      .map(() => new Array(this.size).fill(''));
+    this.field = createField();
   },
 };
 </script>

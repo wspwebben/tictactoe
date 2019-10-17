@@ -1,6 +1,6 @@
 <template>
   <div class="game">
-    <Field :field="field"
+    <Field :field="fieldState"
       @clicked-cell="handleCellClick"
     />
     <span v-if="winner">{{ winner }}</span>
@@ -18,36 +18,38 @@ import {
   getNextPlayer,
 } from '../core/logic';
 
-import { NO_WINNER, EMPTY_CELL } from '../core/consts';
+import {
+  FIELD_SIZE, NO_WINNER, EMPTY_CELL, MAX_PLAYERS,
+} from '../core/consts';
 
 export default {
   data() {
     return {
-      field: [],
+      fieldState: {},
       winner: 0,
       currentPlayer: 0,
     };
   },
   methods: {
     handleCellClick(coords) {
-      const cell = getCell(this.field, coords);
+      const cell = getCell(this.fieldState, coords);
       if (cell !== EMPTY_CELL) return;
 
-      this.field = makeMove(this.field, coords, this.currentPlayer);
+      this.fieldState = makeMove(this.fieldState, coords, this.currentPlayer);
 
-      const { winner } = checkWinner(this.field, this.currentPlayer);
+      const { winner } = checkWinner(this.fieldState, this.currentPlayer);
       if (winner !== NO_WINNER) {
         this.winner = `${winner + 1} player won!`;
       }
 
-      this.currentPlayer = getNextPlayer(this.currentPlayer);
+      this.currentPlayer = getNextPlayer(this.currentPlayer, MAX_PLAYERS);
     },
   },
   components: {
     Field,
   },
   mounted() {
-    this.field = createField();
+    this.fieldState = createField(FIELD_SIZE, EMPTY_CELL);
   },
 };
 </script>

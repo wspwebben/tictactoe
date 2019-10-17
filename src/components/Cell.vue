@@ -7,6 +7,8 @@
 <script>
 import { getCoordinates } from '../core/logic';
 
+import { FIELD_SIZE } from '../core/consts';
+
 export default {
   props: {
     value: {
@@ -20,7 +22,7 @@ export default {
   },
   computed: {
     coords() {
-      return getCoordinates(this.address);
+      return getCoordinates(this.address, FIELD_SIZE);
     },
   },
   methods: {

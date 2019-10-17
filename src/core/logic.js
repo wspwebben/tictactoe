@@ -1,50 +1,50 @@
-import { FIELD_SIZE, EMPTY_CELL, MAX_PLAYERS } from './consts';
-
-function getCellAddress({ x, y }, fieldSize = FIELD_SIZE) {
+function getCellAddress({ x, y }, fieldSize) {
   return fieldSize * y + x;
 }
 
-export function getCoordinates(address, fieldSize = FIELD_SIZE) {
+export function getCoordinates(address, fieldSize) {
   const x = address % fieldSize;
   const y = (address - x) / fieldSize;
   return { x, y };
 }
 
-export function getCell(field, coords) {
-  return field[getCellAddress(coords)];
+export function getCell({ field, size }, coords) {
+  return field[getCellAddress(coords, size)];
 }
 
-export function createField(fieldSize = FIELD_SIZE) {
-  return new Array(fieldSize * fieldSize).fill(EMPTY_CELL);
-
-  // return Array.from(
-  //   { length: fieldSize },
-  //   () => new Array(fieldSize).fill('')
-  // );
+export function createField(size, filler) {
+  return {
+    field: new Array(size * size).fill(filler),
+    size,
+  };
 }
 
-export function makeMove(field, coords, player) {
-  const cellIndex = getCellAddress(coords);
-  return field.map((cell, index) => (cellIndex === index ? player : cell));
+export function makeMove({ field, size }, coords, player) {
+  const cellIndex = getCellAddress(coords, size);
+  return {
+    field: field.map((cell, index) => (cellIndex === index ? player : cell)),
+    size,
+  };
 }
 
-export function getNextPlayer(currentPlayer, maxPlayers = MAX_PLAYERS) {
+export function getNextPlayer(currentPlayer, maxPlayers) {
   return (currentPlayer + 1) % maxPlayers;
 }
 
-export function checkWinner(field, player, fieldSize = FIELD_SIZE) {
-  const countHelper = cell => Number(getCell(field, cell) === player);
-  const checkHelper = counter => counter === fieldSize;
-  const lastCell = fieldSize - 1;
+export function checkWinner(fieldState, player) {
+  const { size } = fieldState;
+  const countHelper = cell => Number(getCell(fieldState, cell) === player);
+  const checkHelper = counter => counter === size;
+  const lastCell = size - 1;
 
   let diagCount = 0;
   let addCount = 0;
 
-  for (let y = 0; y < fieldSize; y += 1) {
+  for (let y = 0; y < size; y += 1) {
     let rowCount = 0;
     let colCount = 0;
 
-    for (let x = 0; x < fieldSize; x += 1) {
+    for (let x = 0; x < size; x += 1) {
       rowCount += countHelper({ x, y });
       colCount += countHelper({ x: y, y: x });
     }

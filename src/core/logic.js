@@ -1,12 +1,12 @@
 import { FIELD_SIZE, EMPTY_CELL, MAX_PLAYERS } from './consts';
 
-function getCellAddress({ x, y }) {
-  return FIELD_SIZE * y + x;
+function getCellAddress({ x, y }, fieldSize = FIELD_SIZE) {
+  return fieldSize * y + x;
 }
 
-export function getCoordinates(address) {
-  const x = address % FIELD_SIZE;
-  const y = (address - x) / FIELD_SIZE;
+export function getCoordinates(address, fieldSize = FIELD_SIZE) {
+  const x = address % fieldSize;
+  const y = (address - x) / fieldSize;
   return { x, y };
 }
 
@@ -28,23 +28,23 @@ export function makeMove(field, { x, y }, player) {
   return field.map((cell, index) => (cellIndex === index ? player : cell));
 }
 
-export function getNextPlayer(currentPlayer) {
-  return (currentPlayer + 1) % MAX_PLAYERS;
+export function getNextPlayer(currentPlayer, maxPlayers = MAX_PLAYERS) {
+  return (currentPlayer + 1) % maxPlayers;
 }
 
-export function checkWinner(field, player) {
+export function checkWinner(field, player, fieldSize = FIELD_SIZE) {
   const countHelper = cell => Number(getCell(field, cell) === player);
-  const checkHelper = counter => counter === FIELD_SIZE;
-  const lastCell = FIELD_SIZE - 1;
+  const checkHelper = counter => counter === fieldSize;
+  const lastCell = fieldSize - 1;
 
   let diagCount = 0;
   let addCount = 0;
 
-  for (let y = 0; y < FIELD_SIZE; y += 1) {
+  for (let y = 0; y < fieldSize; y += 1) {
     let rowCount = 0;
     let colCount = 0;
 
-    for (let x = 0; x < FIELD_SIZE; x += 1) {
+    for (let x = 0; x < fieldSize; x += 1) {
       rowCount += countHelper({ x, y });
       colCount += countHelper({ x: y, y: x });
     }
@@ -79,8 +79,8 @@ export function checkWinner(field, player) {
 
   if (checkHelper(addCount)) {
     return {
-      start: { x: FIELD_SIZE, y: 0 },
-      end: { x: 0, y: FIELD_SIZE },
+      start: { x: lastCell, y: 0 },
+      end: { x: 0, y: lastCell },
       winner: player,
     };
   }

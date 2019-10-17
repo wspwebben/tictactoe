@@ -10,8 +10,8 @@ export function getCoordinates(address, fieldSize = FIELD_SIZE) {
   return { x, y };
 }
 
-function getCell(field, cell) {
-  return field[getCellAddress(cell)];
+export function getCell(field, coords) {
+  return field[getCellAddress(coords)];
 }
 
 export function createField(fieldSize = FIELD_SIZE) {
@@ -23,8 +23,8 @@ export function createField(fieldSize = FIELD_SIZE) {
   // );
 }
 
-export function makeMove(field, { x, y }, player) {
-  const cellIndex = getCellAddress({ x, y });
+export function makeMove(field, coords, player) {
+  const cellIndex = getCellAddress(coords);
   return field.map((cell, index) => (cellIndex === index ? player : cell));
 }
 

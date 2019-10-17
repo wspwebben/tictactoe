@@ -3,6 +3,7 @@
     <Field :field="field"
       @clicked-cell="handleCellClick"
     />
+    <span v-if="winner">{{ winner }}</span>
   </div>
 </template>
 
@@ -11,28 +12,32 @@ import Field from './Field.vue';
 
 import {
   createField,
+  getCell,
   makeMove,
   checkWinner,
   getNextPlayer,
 } from '../core/logic';
 
-import { NO_WINNER } from '../core/consts';
+import { NO_WINNER, EMPTY_CELL } from '../core/consts';
 
 export default {
   data() {
     return {
       field: [],
+      winner: 0,
       currentPlayer: 0,
     };
   },
   methods: {
-    handleCellClick(cell) {
-      this.field = makeMove(this.field, cell, this.currentPlayer);
-      const { winner } = checkWinner(this.field, this.currentPlayer);
+    handleCellClick(coords) {
+      const cell = getCell(this.field, coords);
+      if (cell !== EMPTY_CELL) return;
 
+      this.field = makeMove(this.field, coords, this.currentPlayer);
+
+      const { winner } = checkWinner(this.field, this.currentPlayer);
       if (winner !== NO_WINNER) {
-        // eslint-disable-next-line
-        console.log(`Winner is ${winner + 1} player!`);
+        this.winner = `${winner + 1} player won!`;
       }
 
       this.currentPlayer = getNextPlayer(this.currentPlayer);

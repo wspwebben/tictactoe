@@ -1,6 +1,6 @@
 <template>
   <div class="game">
-    <Field :field="fieldState"
+    <Field :field="field"
       @clicked-cell="handleCellClick"
     />
     <span v-if="winner">{{ winner }}</span>
@@ -25,31 +25,53 @@ import {
 export default {
   data() {
     return {
-      fieldState: {},
+      field: [],
       winner: 0,
       currentPlayer: 0,
     };
   },
   methods: {
     handleCellClick(coords) {
-      const cell = getCell(this.fieldState, coords);
+      const { cell } = getCell({
+        field: this.field,
+        size: FIELD_SIZE,
+        coords,
+      });
+
       if (cell !== EMPTY_CELL) return;
 
-      this.fieldState = makeMove(this.fieldState, coords, this.currentPlayer);
+      this.field = makeMove({
+        field: this.field,
+        size: FIELD_SIZE,
+        coords,
+        player: this.currentPlayer,
+      }).field;
 
-      const { winner } = checkWinner(this.fieldState, this.currentPlayer);
+      const { winner } = checkWinner({
+        field: this.field,
+        size: FIELD_SIZE,
+        player: this.currentPlayer,
+        noWinner: NO_WINNER,
+      });
+
       if (winner !== NO_WINNER) {
         this.winner = `${winner + 1} player won!`;
       }
 
-      this.currentPlayer = getNextPlayer(this.currentPlayer, MAX_PLAYERS);
+      this.currentPlayer = getNextPlayer({
+        currentPlayer: this.currentPlayer,
+        maxPlayers: MAX_PLAYERS,
+      }).player;
     },
   },
   components: {
     Field,
   },
   mounted() {
-    this.fieldState = createField(FIELD_SIZE, EMPTY_CELL);
+    this.field = createField({
+      size: FIELD_SIZE,
+      filler: EMPTY_CELL,
+    }).field;
   },
 };
 </script>

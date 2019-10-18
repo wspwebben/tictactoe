@@ -1,39 +1,56 @@
-function getCellAddress({ x, y }, fieldSize) {
-  return fieldSize * y + x;
+function getCellAddress({ coords: { x, y }, size: fieldSize }) {
+  return {
+    address: fieldSize * y + x,
+  };
 }
 
-export function getCoordinates(address, fieldSize) {
+export function getCoordinates({ address, fieldSize }) {
   const x = address % fieldSize;
   const y = (address - x) / fieldSize;
-  return { x, y };
+
+  return {
+    x,
+    y,
+  };
 }
 
-export function getCell({ field, size }, coords) {
-  return field[getCellAddress(coords, size)];
+export function getCell({ field, size, coords }) {
+  const { address } = getCellAddress({ coords, size });
+
+  return {
+    cell: field[address],
+  };
 }
 
-export function createField(size, filler) {
+export function createField({ size, filler }) {
   return {
     field: new Array(size * size).fill(filler),
     size,
   };
 }
 
-export function makeMove({ field, size }, coords, player) {
-  const cellIndex = getCellAddress(coords, size);
+export function makeMove({
+  field, size, coords, player,
+}) {
+  const { address: cellIndex } = getCellAddress({ coords, size });
+  const newField = field.map((cell, index) => (cellIndex === index ? player : cell));
+
   return {
-    field: field.map((cell, index) => (cellIndex === index ? player : cell)),
+    field: newField,
     size,
   };
 }
 
-export function getNextPlayer(currentPlayer, maxPlayers) {
-  return (currentPlayer + 1) % maxPlayers;
+export function getNextPlayer({ currentPlayer, maxPlayers }) {
+  return {
+    player: (currentPlayer + 1) % maxPlayers,
+  };
 }
 
-export function checkWinner(fieldState, player) {
-  const { size } = fieldState;
-  const countHelper = cell => Number(getCell(fieldState, cell) === player);
+export function checkWinner({
+  field, size, player, noWinner,
+}) {
+  const countHelper = coords => Number(getCell({ field, size, coords }).cell === player);
   const checkHelper = counter => counter === size;
   const lastCell = size - 1;
 
@@ -88,6 +105,6 @@ export function checkWinner(fieldState, player) {
   return {
     start: {},
     end: {},
-    winner: -1,
+    winner: noWinner,
   };
 }

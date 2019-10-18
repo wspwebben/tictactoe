@@ -22,7 +22,10 @@ export default {
   },
   computed: {
     coords() {
-      return getCoordinates(this.address, FIELD_SIZE);
+      return getCoordinates({
+        address: this.address,
+        fieldSize: FIELD_SIZE,
+      });
     },
   },
   methods: {

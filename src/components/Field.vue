@@ -1,7 +1,7 @@
 <template>
   <div class="field">
     <Cell class="field__cell"
-        v-for="(cell, index) in field.field"
+        v-for="(cell, index) in field"
         :key="index"
         :address="index"
         :value="cell"
@@ -18,7 +18,7 @@ import Cell from './Cell.vue';
 export default {
   props: {
     field: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },

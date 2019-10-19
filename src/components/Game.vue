@@ -19,7 +19,7 @@ import {
 } from '../core/logic';
 
 import {
-  FIELD_SIZE, NO_WINNER, EMPTY_CELL, MAX_PLAYERS,
+  FIELD_SIZE, NO_WINNER, EMPTY_CELL, MAX_PLAYERS, ROW_TO_WIN,
 } from '../core/consts';
 
 export default {
@@ -49,9 +49,11 @@ export default {
 
       const { winner } = checkWinner({
         field: this.field,
-        size: FIELD_SIZE,
         player: this.currentPlayer,
+        lastMove: coords,
+        size: FIELD_SIZE,
         noWinner: NO_WINNER,
+        rowToWin: ROW_TO_WIN,
       });
 
       if (winner !== NO_WINNER) {

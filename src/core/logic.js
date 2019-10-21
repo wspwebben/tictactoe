@@ -50,7 +50,7 @@ export function getNextPlayer({ currentPlayer, maxPlayers }) {
 function checkDirection({
   field, size, rowToWin, player,
   direction: [vx, vy],
-  lastMove: { baseX, baseY },
+  lastMove: { x: baseX, y: baseY },
 }) {
   const isValidCoord = coord => coord >= 0 && coord < size;
   const isValidPoint = ({ x, y }) => isValidCoord(x) && isValidCoord(y);
@@ -58,45 +58,39 @@ function checkDirection({
   // generate all possible starting points for a win-row on the current axis
   // the upper limit for them is ROW_TO_WIN
   // the lower limit is 1, when the lastMove is at the field border
-  const axisIterator = Array.from({ length: rowToWin }, (_, i) => ({
+  const axis = Array.from({ length: rowToWin }, (_, i) => ({
     x: baseX - i * vx,
     y: baseY - i * vy,
   })).filter(isValidPoint);
 
-  return axisIterator.some((startPoint) => {
+  // eslint-disable-next-line
+  for (const { x: startX, y: startY } of axis) {
     // generate all points for row
     // it's similiar to generating starting points, but in reverse direction
     // since it mostly contain previous row, but with one point removed/added
     // it's probably a good idea to replace it with Sliding Window pattern
 
-    const rowIterator = Array.from({ length: rowToWin }, (_, i) => ({
-      x: startPoint.x + i * vx,
-      y: startPoint.y + i * vy,
+    const row = Array.from({ length: rowToWin }, (_, i) => ({
+      x: startX + i * vx,
+      y: startY + i * vy,
     }));
 
-    if (!rowIterator.every(isValidPoint)) return false;
+    if (row.every(isValidPoint)) {
+      const isWinningRow = row.every((coords) => {
+        const { cell } = getCell({
+          field,
+          size,
+          coords,
+        });
 
-    const isWinningRow = rowIterator.every((coords) => {
-      const { cell } = getCell({
-        field,
-        size,
-        coords,
+        return (cell === player);
       });
 
-      return (cell === player);
-    });
-
-    if (isWinningRow) {
-      // eslint-disable-next-line
-      console.log(rowIterator);
-
-      // need to find a way to return that points (first and last ones)
-
-      return true;
+      if (isWinningRow) return row;
     }
+  }
 
-    return false;
-  });
+  return false;
 }
 
 export function checkWinner({
@@ -115,15 +109,28 @@ export function checkWinner({
     [-1, 1],
   ];
 
-  directions.some(direction => checkDirection({
-    field,
-    player,
-    direction,
-    lastMove,
-    size,
-    rowToWin,
-  }));
+  // eslint-disable-next-line
+  for (const direction of directions) {
+    const directionRow = checkDirection({
+      field,
+      player,
+      direction,
+      lastMove,
+      size,
+      rowToWin,
+    });
 
-  // need to find a way to return an object with win-row data from .some
+    if (directionRow !== false) {
+      const start = directionRow[0];
+      const end = directionRow[directionRow.length - 1];
+
+      return {
+        winner: player,
+        start,
+        end,
+      };
+    }
+  }
+
   return { winner: noWinner };
 }

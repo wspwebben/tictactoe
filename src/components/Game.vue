@@ -27,7 +27,7 @@ export default {
     return {
       field: [],
       winner: 0,
-      currentPlayer: 0,
+      currentPlayer: 1,
     };
   },
   methods: {
@@ -57,7 +57,7 @@ export default {
       });
 
       if (winner !== NO_WINNER) {
-        this.winner = `${winner + 1} player won!`;
+        this.winner = `${winner} player won!`;
       }
 
       this.currentPlayer = getNextPlayer({

@@ -43,7 +43,7 @@ export function makeMove({
 
 export function getNextPlayer({ currentPlayer, maxPlayers }) {
   return {
-    player: (currentPlayer + 1) % maxPlayers,
+    player: (currentPlayer % maxPlayers) + 1,
   };
 }
 

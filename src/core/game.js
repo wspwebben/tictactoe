@@ -12,7 +12,7 @@ export default function* game({
   const minTurns = maxPlayers * (rowToWin - 1);
   const maxTurns = size * size;
 
-  let { field } = createField({ size, filler: emptyCell });
+  let field = createField({ size, filler: emptyCell });
   let player = 1;
   let turn = 0;
   let winner = noWinner;
@@ -24,19 +24,19 @@ export default function* game({
       winner,
     };
 
-    const { cell } = getCell({
+    const cell = getCell({
       field,
       size,
       coords: move,
     });
 
     if (cell === emptyCell) {
-      ({ field } = makeMove({
+      field = makeMove({
         field,
         size,
         player,
         coords: move,
-      }));
+      });
 
       turn += 1;
 
@@ -59,10 +59,10 @@ export default function* game({
         }
       }
 
-      ({ player } = getNextPlayer({
+      player = getNextPlayer({
         currentPlayer: player,
         maxPlayers,
-      }));
+      });
     }
   } while (turn < maxTurns);
 

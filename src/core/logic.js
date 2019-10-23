@@ -1,50 +1,34 @@
 function getCellAddress({ coords: { x, y }, size: fieldSize }) {
-  return {
-    address: fieldSize * y + x,
-  };
+  return fieldSize * y + x;
 }
 
 export function getCoordinates({ address, fieldSize }) {
   const x = address % fieldSize;
   const y = (address - x) / fieldSize;
 
-  return {
-    x,
-    y,
-  };
+  return { x, y };
 }
 
 export function getCell({ field, size, coords }) {
-  const { address } = getCellAddress({ coords, size });
+  const address = getCellAddress({ coords, size });
 
-  return {
-    cell: field[address],
-  };
+  return field[address];
 }
 
 export function createField({ size, filler }) {
-  return {
-    field: new Array(size * size).fill(filler),
-    size,
-  };
+  return new Array(size * size).fill(filler);
 }
 
 export function makeMove({
   field, size, coords, player,
 }) {
-  const { address: cellIndex } = getCellAddress({ coords, size });
-  const newField = field.map((cell, index) => (cellIndex === index ? player : cell));
+  const cellIndex = getCellAddress({ coords, size });
 
-  return {
-    field: newField,
-    size,
-  };
+  return field.map((cell, index) => (cellIndex === index ? player : cell));
 }
 
 export function getNextPlayer({ currentPlayer, maxPlayers }) {
-  return {
-    player: (currentPlayer % maxPlayers) + 1,
-  };
+  return (currentPlayer % maxPlayers) + 1;
 }
 
 function checkDirection({
@@ -77,7 +61,7 @@ function checkDirection({
 
     if (row.every(isValidPoint)) {
       const isWinningRow = row.every((coords) => {
-        const { cell } = getCell({
+        const cell = getCell({
           field,
           size,
           coords,
@@ -132,5 +116,7 @@ export function checkWinner({
     }
   }
 
-  return { player: noWinner };
+  return {
+    player: noWinner,
+  };
 }

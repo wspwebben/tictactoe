@@ -3,77 +3,58 @@
     <Field :field="field"
       @clicked-cell="handleCellClick"
     />
-    <span v-if="winner">{{ winner }}</span>
+    <p>Waiting for {{ currentPlayer }} player's move</p>
+    <p v-if="winner">{{ winner }} player won!</p>
   </div>
 </template>
 
 <script>
 import Field from './Field.vue';
 
-import {
-  createField,
-  getCell,
-  makeMove,
-  checkWinner,
-  getNextPlayer,
-} from '../core/logic';
+import game from '../core/game';
 
 import {
-  FIELD_SIZE, NO_WINNER, EMPTY_CELL, MAX_PLAYERS, ROW_TO_WIN,
+  FIELD_SIZE, ROW_TO_WIN, NO_WINNER, EMPTY_CELL, MAX_PLAYERS,
 } from '../core/consts';
 
 export default {
   data() {
     return {
       field: [],
-      winner: 0,
-      currentPlayer: 1,
+      winner: NO_WINNER,
+      currentPlayer: 0,
+      isOver: false,
     };
   },
   methods: {
-    handleCellClick(coords) {
-      const { cell } = getCell({
+    handleCellClick(move) {
+      if (this.isOver) return;
+
+      const moveResult = this.gameInstance.next(move);
+      this.isOver = moveResult.done;
+
+      ({
         field: this.field,
-        size: FIELD_SIZE,
-        coords,
-      });
-
-      if (cell !== EMPTY_CELL) return;
-
-      this.field = makeMove({
-        field: this.field,
-        size: FIELD_SIZE,
-        coords,
-        player: this.currentPlayer,
-      }).field;
-
-      const { winner } = checkWinner({
-        field: this.field,
-        player: this.currentPlayer,
-        lastMove: coords,
-        size: FIELD_SIZE,
-        noWinner: NO_WINNER,
-        rowToWin: ROW_TO_WIN,
-      });
-
-      if (winner !== NO_WINNER) {
-        this.winner = `${winner} player won!`;
-      }
-
-      this.currentPlayer = getNextPlayer({
-        currentPlayer: this.currentPlayer,
-        maxPlayers: MAX_PLAYERS,
-      }).player;
+        player: this.player,
+        winner: this.winner,
+      } = moveResult.value);
     },
   },
   components: {
     Field,
   },
   mounted() {
-    this.field = createField({
-      size: FIELD_SIZE,
-      filler: EMPTY_CELL,
-    }).field;
+    this.gameInstance = game({
+      fieldSize: FIELD_SIZE,
+      rowToWin: ROW_TO_WIN,
+      noWinner: NO_WINNER,
+      emptyCell: EMPTY_CELL,
+      maxPlayers: MAX_PLAYERS,
+    });
+
+    const { field, player } = this.gameInstance.next().value;
+    this.field = field;
+    this.currentPlayer = player;
   },
 };
 </script>

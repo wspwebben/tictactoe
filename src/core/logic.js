@@ -125,12 +125,12 @@ export function checkWinner({
       const end = directionRow[directionRow.length - 1];
 
       return {
-        winner: player,
+        player,
         start,
         end,
       };
     }
   }
 
-  return { winner: noWinner };
+  return { player: noWinner };
 }

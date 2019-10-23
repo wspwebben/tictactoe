@@ -53,9 +53,10 @@ export default {
       maxPlayers: MAX_PLAYERS,
     });
 
-    const { field, player } = this.gameInstance.next().value;
-    this.field = field;
-    this.currentPlayer = player;
+    ({
+      field: this.field,
+      player: this.currentPlayer,
+    } = this.gameInstance.next().value);
   },
 };
 </script>

@@ -7,7 +7,7 @@ import {
 } from './logic';
 
 export default function* game({
-  fieldSize: size, rowToWin, noWinner, emptyCell, maxPlayers,
+  fieldSize: size, rowToWin, emptyCell, maxPlayers,
 }) {
   const minTurns = maxPlayers * (rowToWin - 1);
   const maxTurns = size * size;
@@ -15,13 +15,12 @@ export default function* game({
   let field = createField({ size, filler: emptyCell });
   let player = 1;
   let turn = 0;
-  let winner = noWinner;
 
   do {
     const move = yield {
       field,
       player,
-      winner,
+      winner: false,
     };
 
     const cell = getCell({
@@ -41,20 +40,20 @@ export default function* game({
       turn += 1;
 
       if (turn > minTurns) {
-        ({ player: winner } = checkWinner({
+        const winRow = checkWinner({
           field,
           size,
           lastMove: move,
           player,
-          noWinner,
           rowToWin,
-        }));
+        });
 
-        if (winner !== noWinner) {
+        if (winRow !== false) {
           return {
             field,
             player,
-            winner,
+            winner: player,
+            winRow,
           };
         }
       }

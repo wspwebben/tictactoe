@@ -78,7 +78,7 @@ function checkDirection({
 }
 
 export function checkWinner({
-  field, size, noWinner, rowToWin,
+  field, size, rowToWin,
   // the only possible winner is the player who made the last move
   player,
   // and the winning row has to contain that move
@@ -109,14 +109,11 @@ export function checkWinner({
       const end = directionRow[directionRow.length - 1];
 
       return {
-        player,
         start,
         end,
       };
     }
   }
 
-  return {
-    player: noWinner,
-  };
+  return false;
 }

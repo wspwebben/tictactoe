@@ -14,15 +14,16 @@ import Field from './Field.vue';
 import game from '../core/game';
 
 import {
-  FIELD_SIZE, ROW_TO_WIN, NO_WINNER, EMPTY_CELL, MAX_PLAYERS,
+  FIELD_SIZE, ROW_TO_WIN, EMPTY_CELL, MAX_PLAYERS,
 } from '../core/consts';
 
 export default {
   data() {
     return {
       field: [],
-      winner: NO_WINNER,
       currentPlayer: 0,
+      winner: false,
+      winRow: false,
       isOver: false,
     };
   },
@@ -37,6 +38,7 @@ export default {
         field: this.field,
         player: this.player,
         winner: this.winner,
+        winRow: this.winRow,
       } = moveResult.value);
     },
   },
@@ -47,7 +49,6 @@ export default {
     this.gameInstance = game({
       fieldSize: FIELD_SIZE,
       rowToWin: ROW_TO_WIN,
-      noWinner: NO_WINNER,
       emptyCell: EMPTY_CELL,
       maxPlayers: MAX_PLAYERS,
     });

@@ -1,19 +1,15 @@
 <template>
-  <div class="field">
-    <Cell class="field__cell"
-        v-for="(cell, index) in field"
-        :key="index"
-        :address="index"
-        :value="cell"
-        @clicked-cell="handleCellClick"
-    >
-      {{ index }}
-    </Cell>
-  </div>
+  <canvas
+    class="field"
+    ref="field"
+    :width="totalSize"
+    :height="totalSize"
+  ></canvas>
 </template>
 
 <script>
-import Cell from './Cell.vue';
+import { border } from '@/canvas/consts';
+import drawField from '@/canvas/drawField';
 
 export default {
   props: {
@@ -21,29 +17,41 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  methods: {
-    handleCellClick(cell) {
-      this.$emit('clicked-cell', cell);
+    fieldSize: {
+      type: Number,
+      required: true,
+    },
+    cellSize: {
+      type: Number,
+      required: true,
     },
   },
-  components: {
-    Cell,
+  computed: {
+    totalSize() {
+      const { fieldSize, cellSize } = this;
+      return fieldSize * (cellSize + border.width) + border.width;
+    },
+  },
+  methods: {
+  },
+  mounted() {
+    this.context = this.$refs.field.getContext('2d');
+
+    const { fieldSize, cellSize, totalSize } = this;
+
+    drawField(this.context, {
+      fieldSize,
+      cellSize,
+      totalSize,
+      border,
+    });
   },
 };
 </script>
 
 <style lang="scss">
   .field {
-    display: grid;
-    grid-template-columns: repeat(3, 50px);
-    grid-template-rows: repeat(3, 50px);
-
-    &__cell {
-      border: 1px solid #000;
-      padding: 0;
-      background-color: transparent;
-      cursor: pointer;
-    }
+    display: block;
+    margin: 1em;
   }
 </style>

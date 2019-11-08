@@ -1,10 +1,13 @@
 <template>
   <div class="game">
-    <Field :field="field"
+    <Field
+      :field="field"
+      :field-size="fieldSize"
+      :cell-size="cellSize"
       @clicked-cell="handleCellClick"
     />
-    <p>Waiting for {{ currentPlayer }} player's move</p>
     <p v-if="winner">{{ winner }} player won!</p>
+    <p v-else>Waiting for {{ currentPlayer }} player's move</p>
   </div>
 </template>
 
@@ -14,10 +17,28 @@ import Field from './Field.vue';
 import game from '../core/game';
 
 import {
-  FIELD_SIZE, ROW_TO_WIN, EMPTY_CELL, MAX_PLAYERS,
+  CELL_SIZE, FIELD_SIZE, ROW_TO_WIN, MAX_PLAYERS,
 } from '../core/consts';
 
 export default {
+  props: {
+    fieldSize: {
+      type: Number,
+      default: FIELD_SIZE,
+    },
+    cellSize: {
+      type: Number,
+      default: CELL_SIZE,
+    },
+    rowToWin: {
+      type: Number,
+      default: ROW_TO_WIN,
+    },
+    maxPlayers: {
+      type: Number,
+      default: MAX_PLAYERS,
+    },
+  },
   data() {
     return {
       field: [],
@@ -46,11 +67,12 @@ export default {
     Field,
   },
   mounted() {
+    const { fieldSize, rowToWin, maxPlayers } = this;
+
     this.gameInstance = game({
-      fieldSize: FIELD_SIZE,
-      rowToWin: ROW_TO_WIN,
-      emptyCell: EMPTY_CELL,
-      maxPlayers: MAX_PLAYERS,
+      fieldSize,
+      rowToWin,
+      maxPlayers,
     });
 
     ({

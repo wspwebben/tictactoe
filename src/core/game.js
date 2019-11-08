@@ -7,10 +7,11 @@ import {
 } from './logic';
 
 export default function* game({
-  fieldSize: size, rowToWin, emptyCell, maxPlayers,
+  fieldSize: size, rowToWin, maxPlayers,
 }) {
   const minTurns = maxPlayers * (rowToWin - 1);
   const maxTurns = size * size;
+  const emptyCell = 0;
 
   let field = createField({ size, filler: emptyCell });
   let player = 1;

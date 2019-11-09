@@ -1,4 +1,5 @@
 import drawLine from './drawLine';
+import drawCross from './drawCross';
 
 export default function (ctx, {
   fieldSize,
@@ -24,4 +25,12 @@ export default function (ctx, {
       end: [totalSize, x],
     });
   }
+
+  drawCross(ctx, {
+    color: 'red',
+    x: 1,
+    y: 1,
+    cellSize,
+    borderWidth: border.width,
+  });
 }

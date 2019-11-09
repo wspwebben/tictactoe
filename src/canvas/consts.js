@@ -8,4 +8,4 @@ export const playerColors = [
   'blue',
 ];
 
-export const MARK_OFFSET = 0.7;
+export const MARK_OFFSET = 0.35;

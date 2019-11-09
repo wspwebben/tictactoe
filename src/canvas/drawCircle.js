@@ -5,17 +5,14 @@ export default function (ctx, {
   color, ...data
 }) {
   const { x, y } = getCenter(data);
-  const lineLength = MARK_OFFSET * data.cellSize;
+  const radius = MARK_OFFSET * data.cellSize;
 
   // eslint-disable-next-line
   ctx.strokeStyle = color;
 
   ctx.beginPath();
-  ctx.moveTo(x - lineLength, y - lineLength);
-  ctx.lineTo(x + lineLength, y + lineLength);
+  ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
 
-  ctx.moveTo(x + lineLength, y - lineLength);
-  ctx.lineTo(x - lineLength, y + lineLength);
   ctx.stroke();
   ctx.closePath();
 }

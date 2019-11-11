@@ -9,7 +9,7 @@
 
 <script>
 import { border } from '@/canvas/consts';
-import drawField from '@/canvas/drawField';
+import draw from '@/canvas/draw';
 
 export default {
   props: {
@@ -39,7 +39,7 @@ export default {
 
     const { fieldSize, cellSize, totalSize } = this;
 
-    drawField(this.context, {
+    draw(this.context, {
       fieldSize,
       cellSize,
       totalSize,

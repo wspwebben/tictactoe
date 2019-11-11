@@ -1,6 +1,4 @@
-import drawLine from './drawLine';
-import drawCross from './drawCross';
-import drawCircle from './drawCircle';
+import { drawLine } from './figures';
 
 export default function (ctx, {
   fieldSize,
@@ -26,21 +24,4 @@ export default function (ctx, {
       end: [totalSize, x],
     });
   }
-
-  drawCross(ctx, {
-    color: 'red',
-    x: 1,
-    y: 1,
-    cellSize,
-    borderWidth: border.width,
-  });
-
-
-  drawCircle(ctx, {
-    color: 'blue',
-    x: 1,
-    y: 2,
-    cellSize,
-    borderWidth: border.width,
-  });
 }

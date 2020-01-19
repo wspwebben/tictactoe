@@ -4,6 +4,7 @@
       :field="field"
       :field-size="fieldSize"
       :cell-size="cellSize"
+      :last-move="lastMove"
       @clicked-cell="handleCellClick"
     />
     <p v-if="winner">{{ winner }} player won!</p>
@@ -46,6 +47,7 @@ export default {
       winner: false,
       winRow: false,
       isOver: false,
+      lastMove: {},
     };
   },
   methods: {
@@ -61,6 +63,11 @@ export default {
         winner: this.winner,
         winRow: this.winRow,
       } = moveResult.value);
+
+      this.lastMove = {
+        player: this.player,
+        ...move,
+      };
     },
   },
   components: {

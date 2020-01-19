@@ -52,7 +52,10 @@ export default function* game({
         if (winRow !== false) {
           return {
             field,
-            player,
+            player: getNextPlayer({
+              currentPlayer: player,
+              maxPlayers,
+            }),
             winner: player,
             winRow,
           };
